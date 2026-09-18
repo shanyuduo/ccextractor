@@ -1485,6 +1485,7 @@ int general_loop(struct lib_ccx_ctx *ctx)
 
 				enc_ctx = update_encoder_list_cinfo(ctx, cinfo);
 				dec_ctx = update_decoder_list_cinfo(ctx, cinfo);
+				dec_ctx->stream_mode = stream_mode; // needed by store_hdcc() (#2350)
 #ifndef DISABLE_RUST
 				ccxr_dtvcc_set_encoder(dec_ctx->dtvcc_rust, enc_ctx);
 #else

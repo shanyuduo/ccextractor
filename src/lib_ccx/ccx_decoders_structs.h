@@ -213,6 +213,9 @@ struct lib_cc_decode
 	// Analyse/use the picture information
 	int maxtref; // Use to remember the temporal reference number
 
+	// Stream mode of the source (restored, see #2350): store_hdcc() needs it
+	// to decide between overwrite (elementary streams) and concat (MP4).
+	enum ccx_stream_mode_enum stream_mode;
 	int cc_data_count[SORTBUF];
 	// Store fts;
 	LLONG cc_fts[SORTBUF];

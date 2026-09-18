@@ -66,7 +66,12 @@ void store_hdcc(struct encoder_ctx *enc_ctx, struct lib_cc_decode *dec_ctx, unsi
 				}
 			}
 			dec_ctx->cc_fts[seq_index] = current_fts_now; // CFS: Maybe do even if there's no data?
-			dec_ctx->cc_data_count[seq_index] = 0;
+			// Restore the original guard (dropped as a side effect of the 2015
+			// multiprogram refactor, 6aac9dad): for elementary streams the data
+			// at this slot is a re-send and must overwrite; for MP4-sourced data
+			// it must concatenate (see #2350).
+			if (dec_ctx->stream_mode != CCX_SM_MP4)
+				dec_ctx->cc_data_count[seq_index] = 0;
 			memcpy(dec_ctx->cc_data_pkts[seq_index] + dec_ctx->cc_data_count[seq_index] * 3, cc_data, cc_count * 3 + 1);
 		}
 		dec_ctx->cc_data_count[seq_index] += cc_count;
