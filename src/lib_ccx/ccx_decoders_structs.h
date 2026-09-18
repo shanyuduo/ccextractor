@@ -213,9 +213,6 @@ struct lib_cc_decode
 	// Analyse/use the picture information
 	int maxtref; // Use to remember the temporal reference number
 
-	// Stream mode of the source (restored, see #2350): store_hdcc() needs it
-	// to decide between overwrite (elementary streams) and concat (MP4).
-	enum ccx_stream_mode_enum stream_mode;
 	int cc_data_count[SORTBUF];
 	// Store fts;
 	LLONG cc_fts[SORTBUF];
@@ -233,6 +230,14 @@ struct lib_cc_decode
 	// dvb subtitle related
 	int ocr_quantmode;
 	struct lib_cc_decode *prev;
+
+	// Appended at the END of the struct on purpose: this struct is mirrored
+	// by Rust FFI code, which only knows the fields up to `prev`. Adding it
+	// in the middle shifts every later field and breaks the mirror (seen as
+	// caption timeline corruption on Windows in #2351). store_hdcc() needs
+	// it to decide between overwrite (elementary streams) and concat (MP4);
+	// see #2350.
+	enum ccx_stream_mode_enum stream_mode;
 };
 
 #endif
